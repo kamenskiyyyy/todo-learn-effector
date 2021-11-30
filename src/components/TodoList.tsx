@@ -1,14 +1,18 @@
 import * as React from "react";
-import { Button, Input, Flex, Checkbox, Heading } from "@chakra-ui/react";
+import {Button, Checkbox, Flex, Heading, Input} from "@chakra-ui/react";
+import {useStore} from "effector-react";
+import {$store, remove, toggle, update} from "../store";
 
 function TodoListItems() {
+  const store = useStore($store);
+
   return (
     <>
-      {[].map((todo: { id: number; text: string }) => (
-        <Flex pt={2} key={todo.id}>
-          <Checkbox />
-          <Input mx={2} value={todo.text} />
-          <Button>Delete</Button>
+      {store.todos.map(({id, done, text}) => (
+        <Flex pt={2} key={id}>
+          <Checkbox checked={done} onClick={() => toggle(id)}/>
+          <Input mx={2} value={text} onChange={(e) => update({id, text: e.target.value})}/>
+          <Button onClick={() => remove(id)}>Delete</Button>
         </Flex>
       ))}
     </>
